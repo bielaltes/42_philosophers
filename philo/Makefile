@@ -1,6 +1,6 @@
 CC=gcc
 NAME=philo
-CFLAGS=-Wall -Wextra -Werror -lpthread
+CFLAGS=-Wall -Wextra -Werror 
 LIB_DIR=../libft/
 LIB=libft.a
 LIB_INC=libft.h
