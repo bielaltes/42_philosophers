@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:10:15 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/03/29 19:24:33 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/03/30 17:21:20 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ long long abs_time(t_game *game)
     return ( 1000 * (game->start_time.tv_sec - t.tv_sec) + (game->start_time.tv_usec - t.tv_usec) / 1000);
 }
 
-void bsleep(int time)
+void bsleep(int time, t_game *game)
 {
-	time += abs_time();
-	while (abs_time() <= time)
+	time += abs_time(game);
+	while (abs_time(game) <= time)
 		usleep(100);
 }
 
@@ -31,20 +31,21 @@ void print_state(t_philo *philo, char *str)
 {
 	long long t;
 
-	if ( abs_time() - philo->last >= philo->ttd)
+	t = abs_time(philo->game);
+	if ( t - philo->last >= philo->game->ttd)
 	{
 		philo->game->end = 1;
-		write(1, ft_itoa(abs_time), ft_strlen(ft_itoa(abs_time)));
+		write(1, ft_itoa(t), ft_strlen(ft_itoa(t)));
 		write(1, " ", 1);
-		write(1, ft_itoa(philo->n_philo), ft_strlen(ft_itoa(philo->n_philo)));
+		write(1, ft_itoa(philo->num), ft_strlen(ft_itoa(philo->num)));
 		write(1, " ", 1);
 		write(1, D, ft_strlen(D));
 	}
 	else
 	{
-		write(1, ft_itoa(abs_time), ft_strlen(ft_itoa(abs_time)));
+		write(1, ft_itoa(t), ft_strlen(ft_itoa(t)));
 		write(1, " ", 1);
-		write(1, ft_itoa(philo->n_philo), ft_strlen(ft_itoa(philo->n_philo)));
+		write(1, ft_itoa(philo->num), ft_strlen(ft_itoa(philo->num)));
 		write(1, " ", 1);
 		write(1, str, ft_strlen(str));
 	}
@@ -52,28 +53,29 @@ void print_state(t_philo *philo, char *str)
 
 void eating(t_philo *philo)
 {
-	pthread_mutex_lock(philo->game->start);
-	pthread_mutex_unlock(philo->game->start);
-	if (!philo->game->ended)
+	//pthread_mutex_lock(&philo->game->start);
+	//pthread_mutex_unlock(&philo->game->start);
+	ft_printf("hola\n");
+	if (philo->game->end == 0)
 	{
 		pthread_mutex_lock(philo->lfork);
 		print_state(philo,  F);
 		pthread_mutex_lock(&philo->rfork);
 		print_state(philo,  F);
 		print_state(philo,  E);
-		philo->last = abs_time;
-		bsleep(philo->game->tte);
+		philo->last = abs_time(philo->game);
+		bsleep(philo->game->tte, philo->game);
 		pthread_mutex_unlock(philo->lfork);
 		pthread_mutex_unlock(&philo->rfork);
-		usleep(philo->game->tts);
+		bsleep(philo->game->tts, philo->game);
 		eating(philo);
 	}
 }
 
 void anti_deadlock(t_philo *philo)
 {
-	pthread_mutex_lock(philo->game->start);
-	pthread_mutex_unlock(philo->game->start);
-	bsleep(100);
+	pthread_mutex_lock(&philo->game->start);
+	pthread_mutex_unlock(&philo->game->start);
+	bsleep(100, philo->game);
 	eating(philo);
 }

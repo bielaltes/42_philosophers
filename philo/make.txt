@@ -1,22 +1,7 @@
-main.c: In function ‘main’:
-main.c:38:70: error: passing argument 3 of ‘pthread_create’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-   38 |                         err = pthread_create(&game.threads[n], NULL, &eating, (void *)&game.philos[n]);
-      |                                                                      ^~~~~~~
-      |                                                                      |
-      |                                                                      void * (*)(t_philo *) {aka void * (*)(struct s_philo *)}
-In file included from philo.h:21,
-                 from main.c:13:
-/usr/include/pthread.h:204:36: note: expected ‘void * (*)(void *)’ but argument is of type ‘void * (*)(t_philo *)’ {aka ‘void * (*)(struct s_philo *)’}
-  204 |                            void *(*__start_routine) (void *),
-      |                            ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
-main.c:40:70: error: passing argument 3 of ‘pthread_create’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-   40 |                         err = pthread_create(&game.threads[n], NULL, &anti_deadlock, (void *)&game.philos[n]);
-      |                                                                      ^~~~~~~~~~~~~~
-      |                                                                      |
-      |                                                                      void * (*)(t_philo *) {aka void * (*)(struct s_philo *)}
-/usr/include/pthread.h:204:36: note: expected ‘void * (*)(void *)’ but argument is of type ‘void * (*)(t_philo *)’ {aka ‘void * (*)(struct s_philo *)’}
-  204 |                            void *(*__start_routine) (void *),
-      |                            ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
-make[1]: *** [Makefile:23: main.o] Error 1
-make: *** [Makefile:19: all] Error 2
+init.c:43:52: error: expected ';' after expression
+                pthread_mutex_init(&game->philos[i]->rfork, NULL)
+                                                                 ^
+                                                                 ;
+1 error generated.
+make[1]: *** [init.o] Error 1
+make: *** [all] Error 2

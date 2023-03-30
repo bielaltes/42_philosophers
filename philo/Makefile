@@ -1,12 +1,15 @@
 CC=gcc
 NAME=philo
-CFLAGS=-Wall -Wextra -Werror 
+CFLAGS=-Wall -Wextra -Werror -g
 LIB_DIR=../libft/
 LIB=libft.a
 LIB_INC=libft.h
 INC = philo.h
 
-SRC =	main.c
+SRC =	main.c			\
+		eat.c			\
+		init.c			\
+		utils.c			\
 
 SRC_BNS =
 

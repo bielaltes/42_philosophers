@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:38:08 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/03/29 19:24:42 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/03/30 17:17:10 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 # define T "is thinking"
 # define D "died"
 
+typedef struct s_game t_game;
+
 typedef struct s_philo
 {
 	int num;
@@ -34,17 +36,18 @@ typedef struct s_philo
 	pthread_mutex_t rfork;
 	int last_eat;
 	long long last;
-	void *game;
+	t_game *game;
 }	t_philo;
 
 typedef struct s_game
 {
+	int end;
 	int n_philo;
 	int ttd;
 	int tte;
 	int tts;
 	int n_eats;
-	t_philo *philos;
+	t_philo **philos;
 	pthread_t *threads;
 	pthread_mutex_t start;
 	struct timeval	start_time;
@@ -53,9 +56,9 @@ typedef struct s_game
 void			error_exit(char *str);
 int				init(int argc, char **argv, t_game *game);
 long long		abs_time(t_game *game);
-void			bsleep(int time);
+void			bsleep(int time, t_game* game);
 void			print_state(t_philo *philo, char *str);
-void			*eating(t_philo *philo);
-void			*anti_deadlock(t_philo *philo);
+void			eating(t_philo *philo);
+void			anti_deadlock(t_philo *philo);
 
 #endif
