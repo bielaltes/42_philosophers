@@ -12,10 +12,10 @@
 
 #include "philo.h"
 
-int parse(int argc, char **argv)
+/*int parse(int argc, char **argv)
 {
 
-}
+}*/
 
 int init(int argc, char **argv, t_game *game)
 {

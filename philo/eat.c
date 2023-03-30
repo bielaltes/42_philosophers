@@ -12,37 +12,48 @@
 
 #include "philo.h"
 
-long long	time(long long last)
+long long abs_time(t_game *game)
 {
-	timeval t;
+    struct timeval t;
 
-	gettimeoftheday(&t, NULL);
-	return (last - t.tv_sec * 1000 - t.tv_usec / 1000);
+    gettimeofday(&t, NULL);
+    return ( 1000 * (game->start_time.tv_sec - t.tv_sec) + (game->start_time.tv_usec - t.tv_usec) / 1000);
 }
 
-long long	time(long long last)
+void bsleep(int time)
 {
-	timeval t;
-
-	gettimeoftheday(&t, NULL);
-	return (last - t.tv_sec * 1000 - t.tv_usec / 1000);
+	time += abs_time();
+	while (abs_time() <= time)
+		usleep(100);
 }
 
 void print_state(t_philo *philo, char *str)
 {
 	long long t;
 
-	t = time(philo->last)
-	if ( t >= philo->ttd)
+	if ( abs_time() - philo->last >= philo->ttd)
+	{
 		philo->game->end = 1;
+		write(1, ft_itoa(abs_time), ft_strlen(ft_itoa(abs_time)));
+		write(1, " ", 1);
+		write(1, ft_itoa(philo->n_philo), ft_strlen(ft_itoa(philo->n_philo)));
+		write(1, " ", 1);
+		write(1, D, ft_strlen(D));
+	}
 	else
 	{
-		write(1, ft_itoa())
+		write(1, ft_itoa(abs_time), ft_strlen(ft_itoa(abs_time)));
+		write(1, " ", 1);
+		write(1, ft_itoa(philo->n_philo), ft_strlen(ft_itoa(philo->n_philo)));
+		write(1, " ", 1);
+		write(1, str, ft_strlen(str));
 	}
 }
 
 void eating(t_philo *philo)
 {
+	pthread_mutex_lock(philo->game->start);
+	pthread_mutex_unlock(philo->game->start);
 	if (!philo->game->ended)
 	{
 		pthread_mutex_lock(philo->lfork);
@@ -50,10 +61,19 @@ void eating(t_philo *philo)
 		pthread_mutex_lock(&philo->rfork);
 		print_state(philo,  F);
 		print_state(philo,  E);
-		usleep(philo->game->tte);
+		philo->last = abs_time;
+		bsleep(philo->game->tte);
 		pthread_mutex_unlock(philo->lfork);
 		pthread_mutex_unlock(&philo->rfork);
 		usleep(philo->game->tts);
 		eating(philo);
 	}
+}
+
+void anti_deadlock(t_philo *philo)
+{
+	pthread_mutex_lock(philo->game->start);
+	pthread_mutex_unlock(philo->game->start);
+	bsleep(100);
+	eating(philo);
 }

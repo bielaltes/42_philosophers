@@ -19,6 +19,8 @@
 # include <unistd.h>
 # include <unistd.h> 
 # include <pthread.h>
+# include <sys/time.h>
+# include "../libft/libft.h"
 
 # define F "has taken a fork"
 # define E "is eating"
@@ -32,7 +34,7 @@ typedef struct s_philo
 	pthread_mutex_t rfork;
 	int last_eat;
 	long long last;
-	t_game *game;
+	void *game;
 }	t_philo;
 
 typedef struct s_game
@@ -42,9 +44,18 @@ typedef struct s_game
 	int tte;
 	int tts;
 	int n_eats;
-	t_filo *philos;
+	t_philo *philos;
 	pthread_t *threads;
 	pthread_mutex_t start;
-}	s_game;
+	struct timeval	start_time;
+}	t_game;
+
+void			error_exit(char *str);
+int				init(int argc, char **argv, t_game *game);
+long long		abs_time(t_game *game);
+void			bsleep(int time);
+void			print_state(t_philo *philo, char *str);
+void			*eating(t_philo *philo);
+void			*anti_deadlock(t_philo *philo);
 
 #endif

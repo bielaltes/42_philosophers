@@ -82,7 +82,7 @@ all:	$(NAME)
  
 %.o:%.c $(INC)
 	@echo "Compilant $@" 
-	@$(CC) $(CFLAGS) -I $(INC) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS) $(INC)
 	@echo "Creant $@"

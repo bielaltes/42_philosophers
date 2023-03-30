@@ -15,9 +15,7 @@
 void	*ft_calloc(size_t count, size_t size)
 {
 	void	*new;
-	int		i;
 
-	i = 0;
 	new = malloc(size * count);
 	if (!new)
 		return (NULL);
