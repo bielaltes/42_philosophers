@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:12:13 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/03/30 17:18:14 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/03/31 13:32:39 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,23 +31,20 @@ int init(int argc, char **argv, t_game *game)
 		game->n_eats = ft_atoi(argv[5]);
 	else
 		game->n_eats = -1;
-	game->philos = malloc(game->n_philo *sizeof(t_philo *));
+	game->philos = malloc(game->n_philo *sizeof(t_philo));
 	game->threads = malloc(game->n_philo *sizeof(pthread_t));
 	if (!game->philos)
 		error_exit("Error: malloc\n");
 	while (i < game->n_philo)
 	{
-		game->philos[i] = malloc(sizeof(t_philo));
-		if (!game->philos[i])
-			error_exit("Error: malloc\n");
-		pthread_mutex_init(&game->philos[i]->rfork, NULL);
-		game->philos[i]->num = i;
-		game->philos[i]->last = 0;
+		pthread_mutex_init(&game->philos[i].rfork, NULL);
+		game->philos[i].num = i;
+		game->philos[i].last = 0;
 		if (i != 0)
-			game->philos[i]->lfork = &game->philos[i-1]->rfork;
-		game->philos[i]->game = game;
+			game->philos[i].lfork = &game->philos[i-1].rfork;
+		game->philos[i].game = game;
 		++i;
 	}
-	game->philos[0]->lfork = &game->philos[game->n_philo -1]->rfork;
+	game->philos[0].lfork = &game->philos[game->n_philo -1].rfork;
 	return (1);
 }

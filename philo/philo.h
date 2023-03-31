@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:38:08 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/03/30 17:17:10 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/03/31 14:43:43 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,10 @@ typedef struct s_game
 	int tte;
 	int tts;
 	int n_eats;
-	t_philo **philos;
+	t_philo *philos;
 	pthread_t *threads;
 	pthread_mutex_t start;
+	pthread_mutex_t print;
 	struct timeval	start_time;
 }	t_game;
 
@@ -58,7 +59,7 @@ int				init(int argc, char **argv, t_game *game);
 long long		abs_time(t_game *game);
 void			bsleep(int time, t_game* game);
 void			print_state(t_philo *philo, char *str);
-void			eating(t_philo *philo);
-void			anti_deadlock(t_philo *philo);
+void			*eating(t_philo *philo);
+void			*anti_deadlock(t_philo *philo);
 
 #endif

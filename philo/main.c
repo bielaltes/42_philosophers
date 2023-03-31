@@ -6,12 +6,12 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:14:09 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/03/30 17:24:27 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/03/31 14:33:55 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-t_game game;
+
 
 void error_exit(char *str)
 {
@@ -21,7 +21,7 @@ void error_exit(char *str)
 
 int main(int argc, char **argv)
 {
-	
+	t_game game;
 	int		err;
 	int n =0;
 	if (pthread_mutex_init(&game.start, NULL) != 0)
@@ -33,13 +33,14 @@ int main(int argc, char **argv)
 		//error_exit("Error: invalid input\n");
 	init(argc, argv, &game);
 	pthread_mutex_lock(&game.start);
-	ft_printf("%d\n", game.n_philo);
+	pthread_mutex_init(&game.print, NULL);
+	//ft_printf("%d\n", game.n_philo);
 	while (n < game.n_philo)
 	{
 		if (n % 2 == 0)
-			err = pthread_create(&game.threads[n], NULL, (void *)&eating, (void *)&game.philos[n]);
+			err = pthread_create(&game.threads[n], NULL, (void *)&eating, &game.philos[n]);
 		else
-			err = pthread_create(&game.threads[n], NULL, (void *)&anti_deadlock, (void *)&game.philos[n]);
+			err = pthread_create(&game.threads[n], NULL, (void *)&anti_deadlock, &game.philos[n]);
 		if (err != 0)
 					printf("can't create thread\n");
 		++n;
@@ -48,7 +49,10 @@ int main(int argc, char **argv)
 	bsleep(2 * game.n_philo, &game);
 	gettimeofday(&game.start_time, NULL);
 	pthread_mutex_unlock(&game.start);
-		ft_printf("%d\n", game.n_philo);
-	while (1) 
-		write(1, "h", 1);
+		//ft_printf("%d\n", game.n_philo);
+	n = 0;
+	while (n < game.n_philo)
+	{
+		pthread_join(game.threads[n], NULL);	
+	}
 }
