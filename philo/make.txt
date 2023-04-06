@@ -1,7 +1,0 @@
-init.c:43:52: error: expected ';' after expression
-                pthread_mutex_init(&game->philos[i]->rfork, NULL)
-                                                                 ^
-                                                                 ;
-1 error generated.
-make[1]: *** [init.o] Error 1
-make: *** [all] Error 2

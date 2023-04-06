@@ -6,18 +6,11 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:14:09 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/03/31 14:33:55 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/04/06 12:09:57 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-
-void error_exit(char *str)
-{
-	write(2, str, ft_strlen(str));
-	exit(2);
-}
 
 int main(int argc, char **argv)
 {
@@ -46,13 +39,14 @@ int main(int argc, char **argv)
 		++n;
 		
 	}
-	bsleep(2 * game.n_philo, &game);
+	bsleep(2 * game.n_philo, &game.philos[0]);
 	gettimeofday(&game.start_time, NULL);
 	pthread_mutex_unlock(&game.start);
 		//ft_printf("%d\n", game.n_philo);
 	n = 0;
 	while (n < game.n_philo)
 	{
-		pthread_join(game.threads[n], NULL);	
+		pthread_join(game.threads[n], NULL);
+		++n;	
 	}
 }

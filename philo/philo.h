@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:38:08 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/03/31 14:43:43 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/04/06 12:29:41 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include <unistd.h> 
 # include <pthread.h>
 # include <sys/time.h>
-# include "../libft/libft.h"
 
 # define F "has taken a fork"
 # define E "is eating"
@@ -35,6 +34,7 @@ typedef struct s_philo
 	pthread_mutex_t *lfork;
 	pthread_mutex_t rfork;
 	int last_eat;
+	int alive;
 	long long last;
 	t_game *game;
 }	t_philo;
@@ -57,9 +57,12 @@ typedef struct s_game
 void			error_exit(char *str);
 int				init(int argc, char **argv, t_game *game);
 long long		abs_time(t_game *game);
-void			bsleep(int time, t_game* game);
+void			bsleep(int time, t_philo* philo);
 void			print_state(t_philo *philo, char *str);
-void			*eating(t_philo *philo);
-void			*anti_deadlock(t_philo *philo);
+void			eating(t_philo *philo);
+void			anti_deadlock(t_philo *philo);
+int				ft_atoi(const char *str);
+size_t			ft_strlen(const char *str);
+char			*ft_itoa(int n);
 
 #endif

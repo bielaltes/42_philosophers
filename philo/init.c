@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:12:13 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/03/31 13:32:39 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/04/06 12:29:29 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int init(int argc, char **argv, t_game *game)
 		pthread_mutex_init(&game->philos[i].rfork, NULL);
 		game->philos[i].num = i;
 		game->philos[i].last = 0;
+		game->philos[i].alive = 1;
 		if (i != 0)
 			game->philos[i].lfork = &game->philos[i-1].rfork;
 		game->philos[i].game = game;
