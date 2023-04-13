@@ -12,9 +12,22 @@
 
 #include "philo.h"
 
-void error_exit(char *str)
+void error_exit(char *str, t_game *game)
 {
+	int	i;
+
 	write(2, str, ft_strlen(str));
+	pthread_mutex_destroy(&game->start);
+	pthread_mutex_destroy(&game->print);
+	i = 0;
+	while (i < game->n_philo)
+	{
+		pthread_mutex_destroy(&game->philos[i].rfork);
+		free(game->philos[i].str_num);
+		++i;
+	}
+	free(game->philos);
+	free(game->threads);
 	exit(2);
 }
 

@@ -30,7 +30,10 @@ typedef struct s_game t_game;
 
 typedef struct s_philo
 {
+	char *str_num;
 	int num;
+	int len_num;
+	int eaten;
 	pthread_mutex_t *lfork;
 	pthread_mutex_t rfork;
 	int last_eat;
@@ -54,7 +57,8 @@ typedef struct s_game
 	struct timeval	start_time;
 }	t_game;
 
-void			error_exit(char *str);
+void			error_exit(char *str, t_game *game);
+int				parse(int argc, char **argv);
 int				init(int argc, char **argv, t_game *game);
 long long		abs_time(t_game *game);
 void			bsleep(int time, t_philo* philo);

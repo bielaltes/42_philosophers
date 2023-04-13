@@ -14,20 +14,16 @@
 
 int main(int argc, char **argv)
 {
-	t_game game;
+	t_game	game;
 	int		err;
-	int n =0;
-	if (pthread_mutex_init(&game.start, NULL) != 0)
-    {
-        printf("\n mutex init failed\n");
-        return 1;
-    }
-	//if (!parse(argc, argv))
-		//error_exit("Error: invalid input\n");
+	int 	n;
+	
+	n = 0;
+	if (!parse(argc, argv))
+		return (1);
 	init(argc, argv, &game);
-	pthread_mutex_lock(&game.start);
-	pthread_mutex_init(&game.print, NULL);
-	//ft_printf("%d\n", game.n_philo);
+	if (game.n_philo == 0)
+		error_exit("", &game);
 	while (n < game.n_philo)
 	{
 		if (n % 2 == 0)
@@ -37,16 +33,15 @@ int main(int argc, char **argv)
 		if (err != 0)
 					printf("can't create thread\n");
 		++n;
-		
 	}
 	bsleep(2 * game.n_philo, &game.philos[0]);
 	gettimeofday(&game.start_time, NULL);
 	pthread_mutex_unlock(&game.start);
-		//ft_printf("%d\n", game.n_philo);
 	n = 0;
 	while (n < game.n_philo)
 	{
 		pthread_join(game.threads[n], NULL);
 		++n;	
 	}
+	error_exit("", &game);
 }
