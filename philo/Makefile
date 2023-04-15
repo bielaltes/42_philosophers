@@ -9,7 +9,8 @@ INC = philo.h
 SRC =	main.c			\
 		eat.c			\
 		init.c			\
-		utils.c			
+		utils.c			\
+		utils2.c	
 
 SRC_BNS =
 
