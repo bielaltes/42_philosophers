@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eat.c                                              :+:      :+:    :+:   */
+/*   eat_bonus.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/29 17:10:15 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/04/27 15:57:20 by baltes-g         ###   ########.fr       */
+/*   Created: 2023/04/27 15:59:53 by baltes-g          #+#    #+#             */
+/*   Updated: 2023/04/27 17:45:22 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 long long	abs_time(t_game *game)
 {
@@ -35,46 +35,47 @@ void	bsleep(int time, t_philo *philo)
 	}
 }
 
-void	print_state(t_philo *philo, char *str)
+void	control(t_philo *philo)
 {
+	int			dead;
 	long long	t;
-	char		*str_time;
 
-	t = abs_time(philo->game);
-	str_time = ft_itoa(t);
-	if (!str_time)
-		error_exit("error: malloc", philo->game);
-	pthread_mutex_lock(&philo->game->print);
-	if (philo->game->end == 0)
+	dead = 0;
+	while (philo->game->end == 0 && !dead)
 	{
-		printf("%s %s %s\n", str_time, philo->str_num, str);
-		if (t - philo->last >= philo->game->ttd)
-			philo->game->end = 1;
+		t = abs_time(philo->game);
+		if (philo->eaten == philo->game->n_eats)
+			dead = 1;
+		if (!dead && t - philo->last >= philo->game->ttd)
+		{
+			print_state(philo, D);
+			dead = 1;
+		}
+		bsleep(100, philo);
 	}
-	free(str_time);
-	pthread_mutex_unlock(&philo->game->print);
+	exit(1);
 }
 
 void	eating(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->game->start);
-	pthread_mutex_unlock(&philo->game->start);
+	if (pthread_create(&philo->ctrl, NULL, (void *)&control, (void *)philo))
+		error_exit("error: phtread", philo->game);
 	if (philo->game->end == 0)
 	{
-		pthread_mutex_lock(philo->lfork);
+		sem_wait(philo->game->forks);
 		print_state(philo, F);
 		if (philo->game->n_philo == 1)
 			return (bsleep(philo->game->ttd +1, philo));
-		pthread_mutex_lock(&philo->rfork);
+		sem_wait(philo->game->forks);
 		print_state(philo, F);
 		print_state(philo, E);
 		philo->last = abs_time(philo->game);
 		bsleep(philo->game->tte, philo);
 		philo->eaten++;
-		pthread_mutex_unlock(philo->lfork);
-		pthread_mutex_unlock(&philo->rfork);
+		sem_post(philo->game->forks);
+		sem_post(philo->game->forks);
 		if (philo->game->n_eats != -1 && philo->eaten == philo->game->n_eats)
-			return ;
+			exit(1);
 		print_state(philo, S);
 		bsleep(philo->game->tts, philo);
 		print_state(philo, T);
@@ -84,8 +85,6 @@ void	eating(t_philo *philo)
 
 void	anti_deadlock(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->game->start);
-	pthread_mutex_unlock(&philo->game->start);
 	bsleep(1, philo);
 	eating(philo);
 }

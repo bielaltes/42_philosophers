@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   init_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/29 17:12:13 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/04/27 15:53:32 by baltes-g         ###   ########.fr       */
+/*   Created: 2023/04/27 15:59:48 by baltes-g          #+#    #+#             */
+/*   Updated: 2023/04/27 17:40:00 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 int	parse_aux(int argc, char **argv)
 {
@@ -56,8 +56,6 @@ void	create_philos(t_game *game)
 	i = 0;
 	while (i < game->n_philo)
 	{
-		if (pthread_mutex_init(&game->philos[i].rfork, NULL) != 0)
-			error_exit("error: mutex\n", game);
 		game->philos[i].num = i;
 		game->philos[i].last = 0;
 		game->philos[i].alive = 1;
@@ -66,11 +64,23 @@ void	create_philos(t_game *game)
 		if (!game->philos[i].str_num)
 			error_exit("error: malloc\n", game);
 		game->philos[i].len_num = ft_strlen(game->philos[i].str_num);
-		if (i != 0)
-			game->philos[i].lfork = &game->philos[i -1].rfork;
 		game->philos[i].game = game;
 		++i;
 	}
+}
+
+void	init_sems(t_game *game)
+{
+	sem_unlink("sem_forks");
+	sem_unlink("sem_start");
+	sem_unlink("sem_print");
+	game->forks = sem_open("sem_forks", O_CREAT | O_EXCL, 0644, game->n_philo);
+	game->start = sem_open("sem_start", O_CREAT | O_EXCL, 0644, 1);
+	game->print = sem_open("sem_print", O_CREAT | O_EXCL, 0644, 1);
+	if (game->forks == SEM_FAILED
+		|| game->start == SEM_FAILED
+		|| game->print == SEM_FAILED)
+		error_exit("error: sem\n", game);
 }
 
 int	init(int argc, char **argv, t_game *game)
@@ -85,14 +95,11 @@ int	init(int argc, char **argv, t_game *game)
 	else
 		game->n_eats = -1;
 	game->philos = malloc(game->n_philo * sizeof(t_philo));
-	game->threads = malloc(game->n_philo * sizeof(pthread_t));
-	if (!game->philos || !game->threads)
+	game->pids = malloc(game->n_philo * sizeof(int));
+	if (!game->philos)
 		error_exit("Error: malloc\n", game);
-	if (pthread_mutex_init(&game->start, NULL) != 0
-		|| pthread_mutex_init(&game->print, NULL) != 0)
-		error_exit("error: mutex\n", game);
-	pthread_mutex_lock(&game->start);
+	init_sems(game);
+	sem_wait(game->start);
 	create_philos(game);
-	game->philos[0].lfork = &game->philos[game->n_philo -1].rfork;
 	return (1);
 }
