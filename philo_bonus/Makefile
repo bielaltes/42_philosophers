@@ -1,6 +1,6 @@
 CC=gcc
-NAME=philo
-CFLAGS=-Wall -Wextra -Werror
+NAME=philo_bonus
+CFLAGS=-Wall -Wextra -Werror -O3
 LIB_DIR=../libft/
 LIB=libft.a
 LIB_INC=libft.h

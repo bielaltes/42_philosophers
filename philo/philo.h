@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 11:38:08 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/04/15 18:35:51 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/04/28 09:58:14 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct s_game
 	struct timeval	start_time;
 }	t_game;
 
-void			error_exit(char *str, t_game *game);
+int				error_exit(char *str, t_game *game);
 int				parse(int argc, char **argv);
 int				init(int argc, char **argv, t_game *game);
 long long		abs_time(t_game *game);
@@ -69,5 +69,6 @@ void			anti_deadlock(t_philo *philo);
 int				ft_atoi(const char *str);
 size_t			ft_strlen(const char *str);
 char			*ft_itoa(int n);
-
+int				ft_strncmp(const char *s1,
+					const char *s2, size_t n);
 #endif

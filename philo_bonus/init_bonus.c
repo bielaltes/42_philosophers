@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 15:59:48 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/04/27 17:40:00 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/04/28 09:59:07 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ int	parse_aux(int argc, char **argv)
 		while (argv[argc -1][i] != '\0')
 		{
 			if (!(argv[argc -1][i] >= '0' && argv[argc -1][i] <= '9') ||
-				ft_strlen(argv[argc -1]) > 9)
+				ft_strlen(argv[argc -1]) > 9 ||
+					(ft_strlen(argv[argc -1]) == 10 &&
+					ft_strncmp(argv[argc -1], "2147483647", 10) > 0))
 			{
 				printf("error: invalid input\n");
 				return (0);

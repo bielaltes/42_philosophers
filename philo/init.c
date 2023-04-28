@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:12:13 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/04/27 15:53:32 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/04/28 09:58:46 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ int	parse_aux(int argc, char **argv)
 		while (argv[argc -1][i] != '\0')
 		{
 			if (!(argv[argc -1][i] >= '0' && argv[argc -1][i] <= '9') ||
-				ft_strlen(argv[argc -1]) > 9)
+				ft_strlen(argv[argc -1]) > 9 ||
+					(ft_strlen(argv[argc -1]) == 10 &&
+					ft_strncmp(argv[argc -1], "2147483647", 10) > 0))
 			{
 				printf("error: invalid input\n");
 				return (0);
@@ -49,7 +51,7 @@ int	parse(int argc, char **argv)
 	return (parse_aux(argc, argv));
 }
 
-void	create_philos(t_game *game)
+int	create_philos(t_game *game)
 {
 	int	i;
 
@@ -57,20 +59,21 @@ void	create_philos(t_game *game)
 	while (i < game->n_philo)
 	{
 		if (pthread_mutex_init(&game->philos[i].rfork, NULL) != 0)
-			error_exit("error: mutex\n", game);
+			return (error_exit("error: mutex\n", game));
 		game->philos[i].num = i;
 		game->philos[i].last = 0;
 		game->philos[i].alive = 1;
 		game->philos[i].eaten = 0;
 		game->philos[i].str_num = ft_itoa(i + 1);
 		if (!game->philos[i].str_num)
-			error_exit("error: malloc\n", game);
+			return (error_exit("error: malloc\n", game));
 		game->philos[i].len_num = ft_strlen(game->philos[i].str_num);
 		if (i != 0)
 			game->philos[i].lfork = &game->philos[i -1].rfork;
 		game->philos[i].game = game;
 		++i;
 	}
+	return (1);
 }
 
 int	init(int argc, char **argv, t_game *game)
@@ -87,12 +90,13 @@ int	init(int argc, char **argv, t_game *game)
 	game->philos = malloc(game->n_philo * sizeof(t_philo));
 	game->threads = malloc(game->n_philo * sizeof(pthread_t));
 	if (!game->philos || !game->threads)
-		error_exit("Error: malloc\n", game);
+		return (error_exit("Error: malloc\n", game));
 	if (pthread_mutex_init(&game->start, NULL) != 0
 		|| pthread_mutex_init(&game->print, NULL) != 0)
-		error_exit("error: mutex\n", game);
+		return (error_exit("error: mutex\n", game));
 	pthread_mutex_lock(&game->start);
-	create_philos(game);
+	if (!create_philos(game))
+		return (0);
 	game->philos[0].lfork = &game->philos[game->n_philo -1].rfork;
 	return (1);
 }

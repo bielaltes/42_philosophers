@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 15:59:32 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/04/27 17:42:52 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/04/28 09:55:55 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ typedef struct s_game
 }	t_game;
 
 void			error_exit(char *str, t_game *game);
-void			kill_philos(t_game *game);
 int				parse(int argc, char **argv);
 int				init(int argc, char **argv, t_game *game);
 long long		abs_time(t_game *game);
@@ -74,5 +73,6 @@ void			anti_deadlock(t_philo *philo);
 int				ft_atoi(const char *str);
 size_t			ft_strlen(const char *str);
 char			*ft_itoa(int n);
-
+int				ft_strncmp(const char *s1,
+					const char *s2, size_t n);
 #endif

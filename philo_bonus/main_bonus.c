@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 15:59:38 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/04/27 17:44:36 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/04/28 09:37:36 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,25 +45,6 @@ void	create_philo(t_game *game, int n)
 	}
 }
 
-void	kill_philos(t_game *game)
-{
-	int	count;
-	int	status;
-
-	count = 0;
-	while (game->pids[count])
-		kill(game->pids[count++], SIGTERM);
-	while (game->end < game->n_philo)
-	{
-		waitpid(-1, &status, WUNTRACED);
-		if (WEXITSTATUS(status) == 1)
-			break ;
-		if (WEXITSTATUS(status) == 0)
-			game->end++;
-	}
-	error_exit("", game);
-}
-
 int	main(int argc, char **argv)
 {
 	t_game	game;
@@ -89,5 +70,4 @@ int	main(int argc, char **argv)
 		if (WEXITSTATUS(n) == 0)
 			game.end++;
 	}
-	kill_philos(&game);
 }

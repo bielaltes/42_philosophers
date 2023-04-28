@@ -6,7 +6,7 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 15:59:53 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/04/27 17:45:22 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/04/28 09:49:47 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,9 @@ void	control(t_philo *philo)
 			print_state(philo, D);
 			dead = 1;
 		}
-		bsleep(100, philo);
+		bsleep(10, philo);
 	}
+	bsleep(1000, philo);
 	exit(1);
 }
 
@@ -60,7 +61,7 @@ void	eating(t_philo *philo)
 {
 	if (pthread_create(&philo->ctrl, NULL, (void *)&control, (void *)philo))
 		error_exit("error: phtread", philo->game);
-	if (philo->game->end == 0)
+	while (philo->game->end == 0)
 	{
 		sem_wait(philo->game->forks);
 		print_state(philo, F);
@@ -75,11 +76,10 @@ void	eating(t_philo *philo)
 		sem_post(philo->game->forks);
 		sem_post(philo->game->forks);
 		if (philo->game->n_eats != -1 && philo->eaten == philo->game->n_eats)
-			exit(1);
+			exit(0);
 		print_state(philo, S);
 		bsleep(philo->game->tts, philo);
 		print_state(philo, T);
-		eating(philo);
 	}
 }
 

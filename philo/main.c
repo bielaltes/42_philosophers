@@ -6,13 +6,13 @@
 /*   By: baltes-g <baltes-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:14:09 by baltes-g          #+#    #+#             */
-/*   Updated: 2023/04/27 15:50:45 by baltes-g         ###   ########.fr       */
+/*   Updated: 2023/04/28 09:17:50 by baltes-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	error_exit(char *str, t_game *game)
+int	error_exit(char *str, t_game *game)
 {
 	int	i;
 
@@ -28,10 +28,10 @@ void	error_exit(char *str, t_game *game)
 	}
 	free(game->philos);
 	free(game->threads);
-	exit(2);
+	return (0);
 }
 
-void	create_philo(t_game *game, int n)
+int	create_philo(t_game *game, int n)
 {
 	int	err;
 
@@ -46,8 +46,9 @@ void	create_philo(t_game *game, int n)
 				NULL, (void *)&anti_deadlock, &game->philos[n]);
 	}
 	if (err != 0)
-		error_exit("can't create thread\n", game);
+		return (error_exit("can't create thread\n", game));
 	++n;
+	return (1);
 }
 
 void	control(t_game *game)
@@ -83,9 +84,10 @@ int	main(int argc, char **argv)
 	n = 0;
 	if (!parse(argc, argv))
 		return (1);
-	init(argc, argv, &game);
+	if (!init(argc, argv, &game))
+		return (1);
 	if (game.n_philo == 0)
-		error_exit("", &game);
+		return (error_exit("", &game));
 	while (n < game.n_philo)
 	{
 		create_philo(&game, n);
@@ -97,9 +99,6 @@ int	main(int argc, char **argv)
 	control(&game);
 	n = 0;
 	while (n < game.n_philo)
-	{
-		pthread_join(game.threads[n], NULL);
-		++n;
-	}
+		pthread_join(game.threads[n++], NULL);
 	error_exit("", &game);
 }
